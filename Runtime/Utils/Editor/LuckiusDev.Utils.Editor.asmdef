@@ -1,0 +1,18 @@
+{
+    "name": "LuckiusDev.Utils.Editor",
+    "rootNamespace": "LuckiusDev.Utils.Editor",
+    "references": [
+        "GUID:cc5d1a2a64242834aab0169e81e5a274"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
