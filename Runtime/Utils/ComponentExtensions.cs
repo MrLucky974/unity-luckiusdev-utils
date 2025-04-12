@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace LuckiusDev.Utils
 {
-    public static class ComponentHelper
+    public static class ComponentExtensions
     {
         #region Transform
 

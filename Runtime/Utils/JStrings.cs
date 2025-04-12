@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace LuckiusDev.Utils
 {
-    public static class StringExtensions
+    public static class JStrings
     {
         private const string ALPHANUMERIC_CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
         public static string GenerateRandomString(int size)
@@ -94,7 +94,7 @@ namespace LuckiusDev.Utils
         private const string COLORED_TEXT_FORMAT = "<color={0}>{1}</color>";
         public static string FormatColor(string message, Color color)
         {
-            return string.Format(COLORED_TEXT_FORMAT, "#" + ColorUtility.ToHtmlStringRGBA(color), message);
+            return string.Format(COLORED_TEXT_FORMAT, ColorHelper.ToHex(color), message);
         }
     }
 }
