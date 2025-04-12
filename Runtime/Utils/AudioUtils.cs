@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
 
@@ -32,22 +30,58 @@ public static class AudioUtils
         return 20.0f * Mathf.Log10(normalized);
     }
 
-    public static AudioSource Play( AudioClip clip, AudioMixerGroup group, Transform parent = null, float pitch = 1.0f, float spatialBlend = 0.0f ) {
-        GameObject go = new GameObject($"AudioPlayer[{clip.name}]")
+    /// <summary>
+    /// Plays a one-shot audio clip through a temporary AudioSource attached to a new GameObject.
+    /// Automatically destroys the GameObject after playback.
+    /// </summary>
+    /// <param name="clip">The audio clip to play. Cannot be null.</param>
+    /// <param name="group">The AudioMixerGroup to route the sound through. Cannot be null.</param>
+    /// <param name="parent">Optional parent for the temporary GameObject (useful for positioning in 3D space).</param>
+    /// <param name="pitch">Pitch modifier for the clip. Default is 1.0 (normal).</param>
+    /// <param name="spatialBlend">
+    /// Blend between 2D and 3D audio. 
+    /// 0.0 = fully 2D, 1.0 = fully 3D. Default is 0.0 (2D).
+    /// </param>
+    /// <returns>The AudioSource that was used to play the clip.</returns>
+    public static AudioSource Play(
+        AudioClip clip,
+        AudioMixerGroup group,
+        Transform parent = null,
+        float pitch = 1.0f,
+        float spatialBlend = 0.0f)
+    {
+        // Validate input
+        if (clip == null)
         {
-            transform =
-            {
-                parent = parent
-            }
-        };
+            Debug.LogWarning("Play() called with null AudioClip.");
+            return null;
+        }
 
+        if (group == null)
+        {
+            Debug.LogWarning("Play() called with null AudioMixerGroup.");
+            return null;
+        }
+
+        // Create a temporary GameObject to host the AudioSource
+        GameObject go = new GameObject($"AudioPlayer[{clip.name}]");
+
+        // Optional: set parent (for positioning or organization)
+        if (parent != null)
+        {
+            go.transform.SetParent(parent);
+            go.transform.localPosition = Vector3.zero; // Reset local position
+        }
+
+        // Configure the AudioSource
         var source = go.AddComponent<AudioSource>();
-        source.outputAudioMixerGroup = group;
-        source.spatialBlend = spatialBlend;
-        source.pitch = pitch;
         source.clip = clip;
+        source.outputAudioMixerGroup = group;
+        source.pitch = pitch;
+        source.spatialBlend = spatialBlend;
         source.Play();
-        
+
+        // Automatically destroy the GameObject after the clip finishes playing
         Object.Destroy(go, clip.length);
 
         return source;

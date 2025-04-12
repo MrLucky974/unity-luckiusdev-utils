@@ -4,37 +4,55 @@ using UnityEngine;
 
 namespace LuckiusDev.Utils
 {
+    /// <summary>
+    /// General utility functions including value remapping and debug printing for collections.
+    /// </summary>
     public static class JUtils
     {
+        #region Debug Print
+
+        /// <summary>
+        /// Prints the contents of an array to the Unity Console.
+        /// </summary>
         public static void Print<T>(this T[] array)
         {
-            StringBuilder sb = new StringBuilder();
-            sb.Append("[");
+            if (array == null)
+            {
+                Debug.Log("[null array]");
+                return;
+            }
+
+            StringBuilder sb = new StringBuilder("[");
             for (int i = 0; i < array.Length; i++)
             {
-                sb.Append(array[i].ToString());
-                sb.Append(i < array.Length - 1 ? ", " : "");
+                sb.Append(array[i]?.ToString() ?? "null");
+                if (i < array.Length - 1) sb.Append(", ");
             }
             sb.Append("]");
             Debug.Log(sb.ToString());
         }
 
+        /// <summary>
+        /// Prints the contents of a list to the Unity Console.
+        /// </summary>
         public static void Print<T>(this List<T> list)
         {
-            StringBuilder sb = new StringBuilder();
-            sb.Append("[");
+            if (list == null)
+            {
+                Debug.Log("[null list]");
+                return;
+            }
+
+            StringBuilder sb = new StringBuilder("[");
             for (int i = 0; i < list.Count; i++)
             {
-                sb.Append(list[i].ToString());
-                sb.Append(i < list.Count - 1 ? ", " : "");
+                sb.Append(list[i]?.ToString() ?? "null");
+                if (i < list.Count - 1) sb.Append(", ");
             }
             sb.Append("]");
             Debug.Log(sb.ToString());
         }
 
-        public static float Remap(float value, float fromMin, float fromMax, float toMin, float toMax)
-        {
-            return toMin + (value - fromMin) * (toMax - toMin) / (fromMax - fromMin);
-        }
+        #endregion
     }
 }
