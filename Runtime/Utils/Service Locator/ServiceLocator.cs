@@ -98,12 +98,48 @@ namespace LuckiusDev.Utils.ServiceLocator
         }
 
         /// <summary>
+        /// Gets the <see cref="ServiceLocator"/> configured for the scene of a GameObject. Falls back to the global instance.
+        /// </summary>
+        public static ServiceLocator ForSceneOf(GameObject go)
+        {
+            Scene scene = go.scene;
+
+            if (sceneContainers.TryGetValue(scene, out ServiceLocator container) && container != go)
+            {
+                return container;
+            }
+
+            tmpSceneGameObjects.Clear();
+            scene.GetRootGameObjects(tmpSceneGameObjects);
+
+            foreach (GameObject rootGo in tmpSceneGameObjects.Where(rootGo => rootGo.GetComponent<ServiceLocatorScene>() != null))
+            {
+                if (rootGo.TryGetComponent(out ServiceLocatorScene bootstrapper) && bootstrapper.Container != go)
+                {
+                    bootstrapper.BootstrapOnDemand();
+                    return bootstrapper.Container;
+                }
+            }
+
+            return Global;
+        }
+
+        /// <summary>
         /// Gets the closest ServiceLocator instance to the provided 
         /// MonoBehaviour in hierarchy, the ServiceLocator for its scene, or the global ServiceLocator.
         /// </summary>
         public static ServiceLocator For(MonoBehaviour mb)
         {
             return mb.GetComponentInParent<ServiceLocator>().OrNull() ?? ForSceneOf(mb) ?? Global;
+        }
+
+        /// <summary>
+        /// Gets the closest ServiceLocator instance to the provided
+        /// GameObject in hierarchy, the ServiceLocator for its scene, or the global ServiceLocator.
+        /// </summary>
+        public static ServiceLocator For(GameObject go)
+        {
+            return go.GetComponentInParent<ServiceLocator>().OrNull() ?? ForSceneOf(go) ?? Global;
         }
 
         /// <summary>
