@@ -9,7 +9,7 @@ namespace LuckiusDev.Utils.Singleton
     /// </summary>
     public abstract class StaticInstance<T> : MonoBehaviour where T : MonoBehaviour
     {
-        public static T Instance { get; private set; }
+        public static T Instance { get; protected set; }
         protected virtual void Awake() => Instance = this as T;
 
         protected virtual void OnApplicationQuit()
@@ -46,6 +46,47 @@ namespace LuckiusDev.Utils.Singleton
         {
             base.Awake();
             DontDestroyOnLoad(gameObject);
+        }
+    }
+    
+    /// <summary>
+    /// A Singleton that auto-creates itself if no instance exists yet.
+    /// </summary>
+    public abstract class AutoSingleton<T> : Singleton<T> where T : MonoBehaviour
+    {
+        public new static T Instance
+        {
+            get
+            {
+                if (StaticInstance<T>.Instance == null)
+                {
+                    var singletonObject = new GameObject(typeof(T).Name + " (AutoSingleton)");
+                    StaticInstance<T>.Instance = singletonObject.AddComponent<T>();
+                }
+                return StaticInstance<T>.Instance;
+            }
+            protected set => StaticInstance<T>.Instance = value;
+        }
+    }
+    
+    /// <summary>
+    /// A Persistent Singleton that auto-creates itself if no instance exists yet.
+    /// </summary>
+    public abstract class AutoPersistentSingleton<T> : PersistentSingleton<T> where T : MonoBehaviour
+    {
+        public new static T Instance
+        {
+            get
+            {
+                if (StaticInstance<T>.Instance == null)
+                {
+                    var singletonObject = new GameObject(typeof(T).Name + " (AutoPersistentSingleton)");
+                    StaticInstance<T>.Instance = singletonObject.AddComponent<T>();
+                    DontDestroyOnLoad(singletonObject);
+                }
+                return StaticInstance<T>.Instance;
+            }
+            protected set => StaticInstance<T>.Instance = value;
         }
     }
 }
