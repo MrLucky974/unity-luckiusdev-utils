@@ -1,11 +1,11 @@
 {
     "name": "io.github.mrlucky974.unity-luckiusdev-utils",
     "displayName": "LuckiusDev Utils",
-    "version": "1.4.0",
+    "version": "1.4.1",
     "unity": "2022.3",
     "description": "A collection of utility scripts and tools for Unity development.",
     "author": {
-        "name": "MrLucky974",
+        "name": "luckiusdev",
         "url": "https://github.com/mrlucky974"
     },
     "repository": {
