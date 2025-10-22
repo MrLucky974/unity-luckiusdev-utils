@@ -13,22 +13,22 @@ namespace LuckiusDev.Utils
         /// <summary>
         /// Event triggered when a cell value changes in the grid.
         /// </summary>
-        public event EventHandler<OnGridValueChangedEventArgs> OnGridValueChanged;
+        public event EventHandler<OnGridValueChangedEventArgs> onGridValueChanged;
 
         public class OnGridValueChangedEventArgs : EventArgs
         {
-            public int X;
-            public int Y;
+            public int x;
+            public int y;
         }
 
-        private readonly int _width, _height;
-        private readonly float _cellSize;
-        private readonly Vector3 _originPosition;
-        private readonly TGridObject[,] _grid;
+        private readonly int m_width, m_height;
+        private readonly float m_cellSize;
+        private readonly Vector3 m_originPosition;
+        private readonly TGridObject[,] m_grid;
 
-        public int Width => _width;
-        public int Height => _height;
-        public float CellSize => _cellSize;
+        public int Width => m_width;
+        public int Height => m_height;
+        public float CellSize => m_cellSize;
 
         /// <summary>
         /// Initializes the grid with specified dimensions, cell size, origin position, and object creation function.
@@ -36,18 +36,18 @@ namespace LuckiusDev.Utils
         public GridMap(int width, int height, float cellSize, Vector3 originPosition,
             Func<GridMap<TGridObject>, int, int, TGridObject> createGridObject)
         {
-            _width = width;
-            _height = height;
-            _cellSize = cellSize;
-            _originPosition = originPosition;
+            m_width = width;
+            m_height = height;
+            m_cellSize = cellSize;
+            m_originPosition = originPosition;
 
-            _grid = new TGridObject[width, height];
+            m_grid = new TGridObject[width, height];
 
-            for (int x = 0; x < _width; x++)
+            for (int x = 0; x < m_width; x++)
             {
-                for (int y = 0; y < _height; y++)
+                for (int y = 0; y < m_height; y++)
                 {
-                    _grid[x, y] = createGridObject(this, x, y);
+                    m_grid[x, y] = createGridObject(this, x, y);
                 }
             }
         }
@@ -59,7 +59,7 @@ namespace LuckiusDev.Utils
         /// </summary>
         public Vector3 GetWorldPosition(int x, int y)
         {
-            return new Vector3(x, 0, y) * _cellSize + _originPosition;
+            return new Vector3(x, 0, y) * m_cellSize + m_originPosition;
         }
 
         /// <summary>
@@ -67,8 +67,8 @@ namespace LuckiusDev.Utils
         /// </summary>
         public void GetGridPosition(Vector3 worldPosition, out int x, out int y)
         {
-            x = Mathf.FloorToInt((worldPosition - _originPosition).x / _cellSize);
-            y = Mathf.FloorToInt((worldPosition - _originPosition).z / _cellSize);
+            x = Mathf.FloorToInt((worldPosition - m_originPosition).x / m_cellSize);
+            y = Mathf.FloorToInt((worldPosition - m_originPosition).z / m_cellSize);
         }
 
         /// <summary>
@@ -91,7 +91,7 @@ namespace LuckiusDev.Utils
         {
             if (IsInBounds(x, y))
             {
-                return _grid[x, y];
+                return m_grid[x, y];
             }
             return default;
         }
@@ -103,7 +103,7 @@ namespace LuckiusDev.Utils
         {
             if (IsInBounds(x, y))
             {
-                _grid[x, y] = value;
+                m_grid[x, y] = value;
                 TriggerGridObjectChanged(x, y);
             }
         }
@@ -113,7 +113,7 @@ namespace LuckiusDev.Utils
         /// </summary>
         public void TriggerGridObjectChanged(int x, int y)
         {
-            OnGridValueChanged?.Invoke(this, new OnGridValueChangedEventArgs { X = x, Y = y });
+            onGridValueChanged?.Invoke(this, new OnGridValueChangedEventArgs { x = x, y = y });
         }
 
         #endregion
@@ -125,7 +125,7 @@ namespace LuckiusDev.Utils
         /// </summary>
         public bool IsInBounds(int x, int y)
         {
-            return x >= 0 && y >= 0 && x < _width && y < _height;
+            return x >= 0 && y >= 0 && x < m_width && y < m_height;
         }
 
         /// <summary>
@@ -133,11 +133,11 @@ namespace LuckiusDev.Utils
         /// </summary>
         public void ForEach(Action<int, int, TGridObject> action)
         {
-            for (int x = 0; x < _width; x++)
+            for (int x = 0; x < m_width; x++)
             {
-                for (int y = 0; y < _height; y++)
+                for (int y = 0; y < m_height; y++)
                 {
-                    action.Invoke(x, y, _grid[x, y]);
+                    action.Invoke(x, y, m_grid[x, y]);
                 }
             }
         }
@@ -147,7 +147,7 @@ namespace LuckiusDev.Utils
         /// </summary>
         public TGridObject[,] GetRawGrid()
         {
-            return _grid;
+            return m_grid;
         }
 
         /// <summary>

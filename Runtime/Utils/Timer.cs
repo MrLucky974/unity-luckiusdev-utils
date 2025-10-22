@@ -14,8 +14,8 @@ namespace LuckiusDev.Utils
 
         public float Progress => Time / initialTime;
 
-        public Action OnTimerStart = delegate { };
-        public Action OnTimerStop = delegate { };
+        public event Action onTimerStart = delegate { };
+        public event Action onTimerStop = delegate { };
 
         protected Timer(float value)
         {
@@ -29,7 +29,7 @@ namespace LuckiusDev.Utils
             if (!IsRunning)
             {
                 IsRunning = true;
-                OnTimerStart.Invoke();
+                onTimerStart.Invoke();
             }
         }
 
@@ -38,7 +38,7 @@ namespace LuckiusDev.Utils
             if (IsRunning)
             {
                 IsRunning = false;
-                OnTimerStop.Invoke();
+                onTimerStop.Invoke();
             }
         }
 
@@ -88,8 +88,7 @@ namespace LuckiusDev.Utils
             }
         }
 
-        public void Reset() => Time = 0;
-
         public float GetTime() => Time;
+        public void Reset() => Time = 0;
     }
 }

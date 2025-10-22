@@ -13,16 +13,16 @@ namespace LuckiusDev.Utils
         /// <summary>
         /// Event triggered when the timer has completed.
         /// </summary>
-        public event Action TimerComplete;
+        public event Action onTimerComplete;
 
         /// <summary>
         /// Time remaining (in seconds) until the timer completes.
         /// </summary>
         public float TimeLeft { get; private set; }
 
-        private readonly float _duration;
-        private IEnumerator _timerCoroutine;
-        private bool _isRunning;
+        private readonly float m_duration;
+        private Coroutine m_timerCoroutine;
+        private bool m_isRunning;
 
         /// <summary>
         /// Initializes a new instance of the CoroutineTimer.
@@ -30,7 +30,7 @@ namespace LuckiusDev.Utils
         /// <param name="duration">The delay duration in seconds before the timer completes.</param>
         public CoroutineTimer(float duration)
         {
-            _duration = duration;
+            m_duration = duration;
         }
 
         /// <summary>
@@ -38,11 +38,10 @@ namespace LuckiusDev.Utils
         /// </summary>
         public void Start(MonoBehaviour runner)
         {
-            if (_isRunning) return; // Prevent double starts
+            if (m_isRunning) return; // Prevent double starts
 
-            _timerCoroutine = TimerCoroutine();
-            runner.StartCoroutine(_timerCoroutine);
-            _isRunning = true;
+            m_timerCoroutine = runner.StartCoroutine(nameof(TimerCoroutine));
+            m_isRunning = true;
         }
 
         /// <summary>
@@ -50,12 +49,13 @@ namespace LuckiusDev.Utils
         /// </summary>
         public void Stop(MonoBehaviour runner)
         {
-            if (!_isRunning || _timerCoroutine == null) return;
+            if (!m_isRunning || m_timerCoroutine == null) return;
 
-            runner.StopCoroutine(_timerCoroutine);
-            _timerCoroutine = null;
-            _isRunning = false;
+            runner.StopCoroutine(m_timerCoroutine);
+            
             TimeLeft = 0;
+            m_timerCoroutine = null;
+            m_isRunning = false;
         }
 
         /// <summary>
@@ -63,7 +63,7 @@ namespace LuckiusDev.Utils
         /// </summary>
         private IEnumerator TimerCoroutine()
         {
-            float endTime = Time.time + _duration;
+            float endTime = Time.time + m_duration;
 
             while (Time.time < endTime)
             {
@@ -72,9 +72,10 @@ namespace LuckiusDev.Utils
             }
 
             TimeLeft = 0;
-            _isRunning = false;
+            m_isRunning = false;
+            m_timerCoroutine = null;
 
-            TimerComplete?.Invoke();
+            onTimerComplete?.Invoke();
         }
     }
 }

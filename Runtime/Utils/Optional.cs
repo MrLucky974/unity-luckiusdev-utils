@@ -7,8 +7,8 @@ namespace LuckiusDev.Utils
     [Serializable]
     public struct Optional<T>
     {
-        [FormerlySerializedAs("enabled")] [SerializeField] private bool m_enabled;
-        [FormerlySerializedAs("value")] [SerializeField] private T m_value;
+        [SerializeField] private bool m_enabled;
+        [SerializeField] private T m_value;
 
         public bool Enabled => m_enabled;
         public T Value => m_value;

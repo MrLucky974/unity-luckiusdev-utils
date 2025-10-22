@@ -4,12 +4,11 @@ namespace LuckiusDev.Utils.FSM
     public abstract class BaseState
     {
         public string Name { get; private set; }
+        public readonly StateMachine stateMachine;
 
-        protected StateMachine m_StateMachine;
-
-        protected BaseState( string name, StateMachine stateMachine ) {
+        protected BaseState(string name, StateMachine stateMachine) {
             Name = name;
-            m_StateMachine = stateMachine;
+            this.stateMachine = stateMachine;
         }
 
         public virtual void Enter() { }

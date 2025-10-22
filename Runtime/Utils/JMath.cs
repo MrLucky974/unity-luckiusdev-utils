@@ -13,16 +13,16 @@ namespace LuckiusDev.Utils
         /// <summary>
         /// Converts an angle in degrees to a 2D direction vector.
         /// </summary>
-        public static Vector3 GetVectorFromAngle(float angle)
+        public static Vector2 GetVectorFromAngle(float angle)
         {
             float radians = angle * Mathf.Deg2Rad;
-            return new Vector3(Mathf.Cos(radians), Mathf.Sin(radians));
+            return new Vector2(Mathf.Cos(radians), Mathf.Sin(radians));
         }
 
         /// <summary>
-        /// Returns the angle (0–360°) from a 2D direction vector as a float.
+        /// Returns the angle (0-360) from a 2D direction vector as a float.
         /// </summary>
-        public static float GetAngleFromVectorFloat(Vector3 dir)
+        public static float GetAngleFromVectorFloat(Vector2 dir)
         {
             dir = dir.normalized;
             float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
@@ -30,9 +30,9 @@ namespace LuckiusDev.Utils
         }
 
         /// <summary>
-        /// Returns the angle (0–360°) from a 2D direction vector as a rounded int.
+        /// Returns the angle (0-360) from a 2D direction vector as a rounded int.
         /// </summary>
-        public static int GetAngleFromVector(Vector3 dir)
+        public static int GetAngleFromVector(Vector2 dir)
         {
             return Mathf.RoundToInt(GetAngleFromVectorFloat(dir));
         }
@@ -42,7 +42,7 @@ namespace LuckiusDev.Utils
         #region Grid & Rects
 
         /// <summary>
-        /// Computes a roughly rectangular shape (w × h) for a given area.
+        /// Computes a roughly rectangular shape (w * h) for a given area.
         /// </summary>
         public static void ApproximativeRectangle(float area, out int w, out int h)
         {
@@ -68,13 +68,30 @@ namespace LuckiusDev.Utils
         }
 
         /// <summary>
+        /// Converts a 2D integer vector into a 1D array index.
+        /// </summary>
+        public static int CoordinateToIndex(Vector2Int position, int size)
+        {
+            return CoordinateToIndex((position.x, position.y), size);
+        }
+
+        /// <summary>
         /// Converts a 1D array index to a 2D grid coordinate (x, z).
         /// </summary>
-        public static (int x, int z) IndexToCoordinate(int i, int size)
+        public static (int x, int z) IndexToCoordinateTuple(int index, int size)
         {
-            int x = i % size;
-            int z = i / size;
+            int x = index % size;
+            int z = index / size;
             return (x, z);
+        }
+
+        /// <summary>
+        /// Converts a 1D array index to a 2D integer vector.
+        /// </summary>
+        public static Vector2Int IndexToCoordinateVector(int index, int size)
+        {
+            var coords = IndexToCoordinateTuple(index, size);
+            return new Vector2Int(coords.x, coords.z);
         }
 
         #endregion

@@ -29,11 +29,13 @@ namespace LuckiusDev.Utils
         [Header("Lock Rotation")] [SerializeField]
         private RotationLock m_rotationLock;
 
-        private Vector3 _originalRotation;
+        private Vector3 m_originalRotation;
+        private Camera m_camera;
 
         private void Awake()
         {
-            _originalRotation = transform.rotation.eulerAngles;
+            m_camera = Camera.main;
+            m_originalRotation = transform.rotation.eulerAngles;
         }
 
         // LateUpdate() is used to make sure the object is not moving
@@ -43,30 +45,30 @@ namespace LuckiusDev.Utils
             switch (m_billboardType)
             {
                 case BillboardType.LOOK_AT_CAMERA:
-                    transform.LookAt(Camera.main.transform.position, Vector3.up);
+                    transform.LookAt(m_camera.transform.position, Vector3.up);
                     break;
                 case BillboardType.CAMERA_FORWARD:
-                    transform.forward = Camera.main.transform.forward;
+                    transform.forward = m_camera.transform.forward;
                     break;
                 default:
-                    break;
+                    throw new ArgumentOutOfRangeException();
             }
 
             // Modify the rotation in Euler space to lock certain dimensions
             Vector3 rotation = transform.rotation.eulerAngles;
             if (m_rotationLock.HasFlag(RotationLock.LOCK_X))
             {
-                rotation.x = _originalRotation.x;
+                rotation.x = m_originalRotation.x;
             }
 
             if (m_rotationLock.HasFlag(RotationLock.LOCK_Y))
             {
-                rotation.y = _originalRotation.y;
+                rotation.y = m_originalRotation.y;
             }
 
             if (m_rotationLock.HasFlag(RotationLock.LOCK_Z))
             {
-                rotation.z = _originalRotation.z;
+                rotation.z = m_originalRotation.z;
             }
 
             transform.rotation = Quaternion.Euler(rotation);

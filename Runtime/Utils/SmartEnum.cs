@@ -7,14 +7,15 @@ namespace LuckiusDev.Utils
 {
     public abstract class SmartEnum<T> where T : SmartEnum<T>
     {
-        private static readonly Lazy<List<T>> _lazyValues =
-        new Lazy<List<T>>(() => typeof(T)
-            .GetFields(BindingFlags.Public | BindingFlags.Static)
-            .Where(f => f.FieldType == typeof(T))
-            .Select(f => (T)f.GetValue(null))
-            .ToList());
+        private static readonly Lazy<List<T>> s_lazyValues =
+            new(() => typeof(T)
+                .GetFields(BindingFlags.Public | BindingFlags.Static)
+                .Where(f => f.FieldType == typeof(T))
+                .Select(f => (T)f.GetValue(null))
+                .ToList()
+            );
 
-        public static IReadOnlyList<T> Values => _lazyValues.Value.AsReadOnly();
+        public static IReadOnlyList<T> Values => s_lazyValues.Value.AsReadOnly();
 
         // Common properties
         public string Name { get; }
@@ -35,6 +36,7 @@ namespace LuckiusDev.Utils
 
         public override bool Equals(object obj) => obj is T other && Name == other.Name;
         public override int GetHashCode() => Name.GetHashCode();
+        
         public static bool operator ==(SmartEnum<T> left, SmartEnum<T> right) => Equals(left, right);
         public static bool operator !=(SmartEnum<T> left, SmartEnum<T> right) => !Equals(left, right);
     }

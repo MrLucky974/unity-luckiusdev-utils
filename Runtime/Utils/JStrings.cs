@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using LuckiusDev.Utils.Extensions;
 using UnityEngine;
 
 namespace LuckiusDev.Utils
@@ -11,10 +12,10 @@ namespace LuckiusDev.Utils
     /// </summary>
     public static class JStrings
     {
-        private const string ALPHANUMERIC_CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-        private const string COLORED_TEXT_FORMAT = "<color={0}>{1}</color>";
-        private const char FILLED_CHAR = '■';
-        private const char EMPTY_CHAR = '□';
+        private const string k_alphanumericCharacters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        private const string k_coloredTextFormat = "<color={0}>{1}</color>";
+        private const char k_filledCharacter = '■';
+        private const char k_emptyCharacter = '□';
 
         #region Random Strings
 
@@ -23,7 +24,7 @@ namespace LuckiusDev.Utils
             char[] stringChars = new char[size];
             for (int i = 0; i < size; i++)
             {
-                stringChars[i] = ALPHANUMERIC_CHARACTERS[UnityEngine.Random.Range(0, ALPHANUMERIC_CHARACTERS.Length)];
+                stringChars[i] = k_alphanumericCharacters[UnityEngine.Random.Range(0, k_alphanumericCharacters.Length)];
             }
             return new string(stringChars);
         }
@@ -58,7 +59,7 @@ namespace LuckiusDev.Utils
             return number.ToString("F0") + suffixes[suffixIndex];
         }
 
-        public static string FormatWithCommas(float value) => string.Format("{0:N0}", value);
+        public static string FormatWithCommas(float value) => $"{value:N0}";
 
         public static string FormatTimeHHMMSS(float seconds)
         {
@@ -102,7 +103,7 @@ namespace LuckiusDev.Utils
             StringBuilder sb = new StringBuilder();
             sb.Append('[');
             for (int i = 0; i < totalCount; i++)
-                sb.Append(i < filledCount ? FILLED_CHAR : EMPTY_CHAR);
+                sb.Append(i < filledCount ? k_filledCharacter : k_emptyCharacter);
             sb.Append(']');
             return sb.ToString();
         }
@@ -135,9 +136,13 @@ namespace LuckiusDev.Utils
         #region Rich Text Formatters
 
         public static string Bold(string text) => $"<b>{text}</b>";
+        public static string ToBold(this string text) => Bold(text);
+        
         public static string Italic(string text) => $"<i>{text}</i>";
+        public static string ToItalic(this string text) => Italic(text);
+        
         public static string Size(string text, int size) => $"<size={size}>{text}</size>";
-        public static string ColorHex(string text, string hex) => string.Format(COLORED_TEXT_FORMAT, hex, text);
+        public static string ToSize(this string text, int size) => Size(text, size);
 
         public static string Rainbowize(string text)
         {
@@ -151,10 +156,10 @@ namespace LuckiusDev.Utils
             return sb.ToString();
         }
 
-        public static string FormatColor(string message, Color color)
-        {
-            return string.Format(COLORED_TEXT_FORMAT, ColorExtensions.ToHex(color), message);
-        }
+        public static string ColorHex(string text, string hex) => string.Format(k_coloredTextFormat, hex, text);
+        public static string FormatColor(string text, Color color) => ColorHex(text, color.ToHex());
+        public static string ToColor(this string text, Color color) => FormatColor(text, color);
+        public static string ToColor(this string text, string color) => string.Format(k_coloredTextFormat, color, text);
 
         #endregion
 

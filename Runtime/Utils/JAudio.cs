@@ -1,10 +1,10 @@
 using UnityEngine;
 using UnityEngine.Audio;
 
-public static class AudioUtils
+public static class JAudio
 {
     // Minimum dB value to avoid -∞ when normalized is 0
-    private const float MinDb = -80.0f;
+    private const float k_minDecibels = -80.0f;
 
     /// <summary>
     /// Converts a dB value to a normalized 0-1 range.
@@ -14,7 +14,7 @@ public static class AudioUtils
     public static float DbToNormalized(float db)
     {
         // Clamp dB to avoid values lower than the minimum (silence)
-        db = Mathf.Clamp(db, MinDb, 0);
+        db = Mathf.Clamp(db, k_minDecibels, 0);
         return Mathf.Pow(10, db / 20.0f);
     }
 

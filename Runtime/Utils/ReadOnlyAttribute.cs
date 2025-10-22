@@ -8,12 +8,11 @@ namespace LuckiusDev.Utils
     /// </summary>
     public class ReadOnlyAttribute : PropertyAttribute
     {
-        private bool _onPlayMode;
-        public bool OnPlayMode => _onPlayMode;
+        public bool OnPlayMode { get; }
 
         public ReadOnlyAttribute(bool onPlayMode = false)
         {
-            _onPlayMode = onPlayMode;
+            OnPlayMode = onPlayMode;
         }
     }
 }

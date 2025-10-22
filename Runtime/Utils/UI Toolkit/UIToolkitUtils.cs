@@ -4,11 +4,11 @@ namespace LuckiusDev.Utils.UIToolkit
 {
     public struct UIToolkitUtils
     {
-        public static VisualElement Create( params string[] classNames ) {
+        public static VisualElement Create(params string[] classNames) {
             return Create<VisualElement>(classNames);
         }
         
-        public static T Create<T>(params string[] classNames ) where T : VisualElement, new() {
+        public static T Create<T>(params string[] classNames) where T : VisualElement, new() {
             var element = new T();
             foreach (var className in classNames)
             {

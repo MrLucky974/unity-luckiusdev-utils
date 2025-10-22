@@ -15,20 +15,20 @@ namespace LuckiusDev.Utils.Tags
 {
     public static class TagsManager
     {
-        internal static readonly Dictionary<string, Tag> tags = new Dictionary<string, Tag>();
-        private static readonly Dictionary<Tag, HashSet<GameObject>> allObjectsWithTag = new Dictionary<Tag, HashSet<GameObject>>();
-        private static readonly Dictionary<GameObject, Tags> cachedTags = new Dictionary<GameObject, Tags>();
+        internal static readonly Dictionary<string, Tag> Tags = new();
+        private static readonly Dictionary<Tag, HashSet<GameObject>> s_allObjectsWithTag = new();
+        private static readonly Dictionary<GameObject, Tags> s_cachedTags = new();
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         private static void Init()
         {
-            cachedTags.Clear();
+            s_cachedTags.Clear();
         }
 
         #region FindGameObjectWithTag
         public static GameObject FindWithTag(this GameObject gameObject, string tagName)
         {
-            if (!tags.TryGetValue(tagName, out Tag tag))
+            if (!Tags.TryGetValue(tagName, out Tag tag))
             {
                 Debug.LogError($"No tag called {tagName}");
                 return null;
@@ -37,7 +37,7 @@ namespace LuckiusDev.Utils.Tags
             CheckFindWithTagArguments(tag);
 
             //if (!allObjectsWithTag.TryGetValue(tag, out var objectsLookup) || objectsLookup.Count == 0) throw new NullReferenceException($"No Game Objects found with tag {tag.name}.");
-            if (!allObjectsWithTag.TryGetValue(tag, out var objectsLookup) || objectsLookup.Count == 0)
+            if (!s_allObjectsWithTag.TryGetValue(tag, out var objectsLookup) || objectsLookup.Count == 0)
             {
                 //Debug.LogError($"No Game Objects found with tag {tagName}");
                 return null;
@@ -60,7 +60,7 @@ namespace LuckiusDev.Utils.Tags
             CheckFindWithTagArguments(tag);
 
             //if (!allObjectsWithTag.TryGetValue(tag, out var objectsLookup) || objectsLookup.Count == 0) throw new NullReferenceException($"No Game Objects found with tag {tag.name}.");
-            if (!allObjectsWithTag.TryGetValue(tag, out var objectsLookup) || objectsLookup.Count == 0) return null;
+            if (!s_allObjectsWithTag.TryGetValue(tag, out var objectsLookup) || objectsLookup.Count == 0) return null;
 
             GameObject firstObject = null;
             foreach (GameObject obj in objectsLookup)
@@ -74,12 +74,12 @@ namespace LuckiusDev.Utils.Tags
 
         public static HashSet<GameObject> FindAllWithTag(this GameObject gameObject, string tagName)
         {
-            if (!tags.TryGetValue(tagName, out Tag tag)) return null;
+            if (!Tags.TryGetValue(tagName, out Tag tag)) return null;
 
             CheckFindWithTagArguments(tag);
 
             //if (!allObjectsWithTag.TryGetValue(tag, out var objectsLookup) || objectsLookup.Count == 0) throw new NullReferenceException($"No Game Objects found with tag {tag.name}.");
-            if (!allObjectsWithTag.TryGetValue(tag, out var objectsLookup) || objectsLookup.Count == 0) return null;
+            if (!s_allObjectsWithTag.TryGetValue(tag, out var objectsLookup) || objectsLookup.Count == 0) return null;
 
             return objectsLookup;
         }
@@ -89,7 +89,7 @@ namespace LuckiusDev.Utils.Tags
             CheckFindWithTagArguments(tag);
 
             //if (!allObjectsWithTag.TryGetValue(tag, out var objectsLookup) || objectsLookup.Count == 0) throw new NullReferenceException($"No Game Objects found with tag {tag.name}.");
-            if (!allObjectsWithTag.TryGetValue(tag, out var objectsLookup) || objectsLookup.Count == 0) return null;
+            if (!s_allObjectsWithTag.TryGetValue(tag, out var objectsLookup) || objectsLookup.Count == 0) return null;
 
             return objectsLookup;
         }
@@ -99,7 +99,7 @@ namespace LuckiusDev.Utils.Tags
             CheckFindWithTagArguments(tag);
 
             objectWithTag = null;
-            if (!allObjectsWithTag.TryGetValue(tag, out var objectsLookup) || objectsLookup.Count == 0) return false;
+            if (!s_allObjectsWithTag.TryGetValue(tag, out var objectsLookup) || objectsLookup.Count == 0) return false;
 
             foreach (GameObject obj in objectsLookup)
             {
@@ -113,7 +113,7 @@ namespace LuckiusDev.Utils.Tags
         public static bool TryFindAllWithTag(this GameObject gameObject, Tag tag, out HashSet<GameObject> objectsLookup)
         {
             CheckFindWithTagArguments(tag);
-            return allObjectsWithTag.TryGetValue(tag, out objectsLookup) && objectsLookup.Count != 0;
+            return s_allObjectsWithTag.TryGetValue(tag, out objectsLookup) && objectsLookup.Count != 0;
         }
 
         private static void CheckFindWithTagArguments(Tag tag)
@@ -126,7 +126,7 @@ namespace LuckiusDev.Utils.Tags
         //HasTag
         public static bool HasTag(this Component instance, string tagName)
         {
-            if (!tags.TryGetValue(tagName, out Tag tag)) return false;
+            if (!Tags.TryGetValue(tagName, out Tag tag)) return false;
             return HasTag(instance.gameObject, tag);
         }
 
@@ -134,7 +134,7 @@ namespace LuckiusDev.Utils.Tags
 
         public static bool HasTag(this GameObject gameObject, string tagName)
         {
-            if (!tags.TryGetValue(tagName, out Tag tag)) return false;
+            if (!Tags.TryGetValue(tagName, out Tag tag)) return false;
             return HasTag(gameObject, tag);
         }
 
@@ -149,7 +149,7 @@ namespace LuckiusDev.Utils.Tags
         //HasOnlyTag
         public static bool HasOnlyTag(this Component instance, string tagName)
         {
-            if (!tags.TryGetValue(tagName, out Tag tag)) return false;
+            if (!Tags.TryGetValue(tagName, out Tag tag)) return false;
             return HasOnlyTag(instance.gameObject, tag);
         }
 
@@ -157,7 +157,7 @@ namespace LuckiusDev.Utils.Tags
 
         public static bool HasOnlyTag(this GameObject gameObject, string tagName)
         {
-            if (!tags.TryGetValue(tagName, out Tag tag)) return false;
+            if (!Tags.TryGetValue(tagName, out Tag tag)) return false;
             return HasOnlyTag(gameObject, tag);
         }
 
@@ -205,35 +205,35 @@ namespace LuckiusDev.Utils.Tags
 
         internal static void RegisterTag(this Tag tag)
         {
-            if (!tags.TryGetValue(tag.name, out _))
+            if (!Tags.TryGetValue(tag.name, out _))
             {
-                tags.Add(tag.name, tag);
+                Tags.Add(tag.name, tag);
             }
         }
 
         internal static void RegisterGameObjectWithTag(this GameObject gameObject, Tag tag)
         {
-            if (!allObjectsWithTag.TryGetValue(tag, out HashSet<GameObject> objectsList))
+            if (!s_allObjectsWithTag.TryGetValue(tag, out HashSet<GameObject> objectsList))
             {
                 objectsList = new HashSet<GameObject>();
-                allObjectsWithTag.Add(tag, objectsList);
+                s_allObjectsWithTag.Add(tag, objectsList);
             }
             objectsList.Add(gameObject);
         }
 
         internal static void RemoveGameObjectWithTag(this GameObject gameObject, Tag tag)
         {
-            if (!allObjectsWithTag.TryGetValue(tag, out HashSet<GameObject> objectsList)) return;
+            if (!s_allObjectsWithTag.TryGetValue(tag, out HashSet<GameObject> objectsList)) return;
             objectsList.Remove(gameObject);
         }
 
         private static bool TryGetTagComponent(GameObject gameObject, out Tags component)
         {
-            if (!cachedTags.TryGetValue(gameObject, out component))
+            if (!s_cachedTags.TryGetValue(gameObject, out component))
             {
                 if (!gameObject.TryGetComponent(out component)) return false;
 
-                cachedTags.Add(gameObject, component);
+                s_cachedTags.Add(gameObject, component);
             }
             return true;
         }

@@ -4,8 +4,8 @@ using UnityEngine;
 [Serializable]
 public class PIDController {
     public enum DerivativeMeasurement {
-        Velocity,
-        ErrorRateOfChange
+        VELOCITY,
+        ERROR_RATE_OF_CHANGE
     }
 
     //PID coefficients
@@ -52,7 +52,7 @@ public class PIDController {
         float deriveMeasure = 0;
 
         if (derivativeInitialized) {
-            if (derivativeMeasurement == DerivativeMeasurement.Velocity) {
+            if (derivativeMeasurement == DerivativeMeasurement.VELOCITY) {
                 deriveMeasure = -valueRateOfChange;
             } else {
                 deriveMeasure = errorRateOfChange;
@@ -96,7 +96,7 @@ public class PIDController {
         float deriveMeasure = 0;
 
         if (derivativeInitialized) {
-            if (derivativeMeasurement == DerivativeMeasurement.Velocity) {
+            if (derivativeMeasurement == DerivativeMeasurement.VELOCITY) {
                 deriveMeasure = -valueRateOfChange;
             } else {
                 deriveMeasure = errorRateOfChange;

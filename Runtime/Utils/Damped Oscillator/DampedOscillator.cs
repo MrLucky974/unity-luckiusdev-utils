@@ -9,8 +9,8 @@ namespace LuckiusDev.Utils.DampedOscillator
     [DefaultExecutionOrder(-1000)]
     public static class DampedOscillator
     {
-        private static readonly List<IAnimationInstance> Instances = new();
-        private static readonly List<IAnimationInstance> Deletion = new();
+        private static readonly List<IAnimationInstance> s_instances = new();
+        private static readonly List<IAnimationInstance> s_deletion = new();
         
         public delegate void AnimationProcessDelegate<T>(in T originalValue, in float displacement, in float scaleFactor);
         public delegate void AnimationEndDelegate<T>(in T originalValue);
@@ -22,43 +22,43 @@ namespace LuckiusDev.Utils.DampedOscillator
         
         private class AnimationInstance<T> : IAnimationInstance
         {
-            public event Action<AnimationInstance<T>> AnimationFinished;
+            public event Action<AnimationInstance<T>> onAnimationFinished;
             
-            private readonly T _originalValue;
-            private readonly AnimationProcessDelegate<T> _animation;
-            private readonly AnimationEndDelegate<T> _reset;
+            private readonly T m_originalValue;
+            private readonly AnimationProcessDelegate<T> m_animation;
+            private readonly AnimationEndDelegate<T> m_reset;
             
-            private readonly float _springForce;
-            private readonly float _damp;
+            private readonly float m_springForce;
+            private readonly float m_damp;
 
-            private float _velocity;
-            private float _displacement;
-            private readonly float _scaleFactor;
+            private float m_velocity;
+            private float m_displacement;
+            private readonly float m_scaleFactor;
             
             public AnimationInstance(AnimationProcessDelegate<T> animation, AnimationEndDelegate<T> reset, T originalValue, float springForce, float damp, float velocity, float scaleFactor)
             {
-                _animation = animation;
-                _originalValue = originalValue;
+                m_animation = animation;
+                m_originalValue = originalValue;
                 
-                _springForce = springForce;
-                _damp = damp;
+                m_springForce = springForce;
+                m_damp = damp;
 
-                _velocity = velocity;
-                _scaleFactor = scaleFactor;
+                m_velocity = velocity;
+                m_scaleFactor = scaleFactor;
             }
 
             public void Process()
             {
-                var force = -_springForce * _displacement - _damp * _velocity;
-                _velocity += force * Time.deltaTime;
-                _displacement += _velocity * Time.deltaTime;
+                var force = -m_springForce * m_displacement - m_damp * m_velocity;
+                m_velocity += force * Time.deltaTime;
+                m_displacement += m_velocity * Time.deltaTime;
                 
-                _animation?.Invoke(_originalValue, _displacement, _scaleFactor);
+                m_animation?.Invoke(m_originalValue, m_displacement, m_scaleFactor);
 
-                if (Mathf.Abs(_velocity) < Mathf.Epsilon)
+                if (Mathf.Abs(m_velocity) < Mathf.Epsilon)
                 {
-                    _reset?.Invoke(_originalValue);
-                    AnimationFinished?.Invoke(this);
+                    m_reset?.Invoke(m_originalValue);
+                    onAnimationFinished?.Invoke(this);
                 }
             }
         }
@@ -67,8 +67,8 @@ namespace LuckiusDev.Utils.DampedOscillator
         private static void Awake()
         {
             // Clear the lists
-            Deletion.Clear();
-            Instances.Clear();
+            s_deletion.Clear();
+            s_instances.Clear();
             
             // Add the Update method to the player loop
             #region Player Loop
@@ -110,24 +110,24 @@ namespace LuckiusDev.Utils.DampedOscillator
             if (Application.isPlaying is false)
             {
                 // Clear everything to be sure nothing gets updated
-                Instances.Clear();
-                Deletion.Clear();
+                s_instances.Clear();
+                s_deletion.Clear();
                 
                 return;
             }
             
             // Remove every element queued for deletion from the Instances list
-            foreach (var instance in Deletion)
+            foreach (var instance in s_deletion)
             {
-                if (Instances.Contains(instance))
+                if (s_instances.Contains(instance))
                 {
-                    Instances.Remove(instance);
+                    s_instances.Remove(instance);
                 }
             }
-            Deletion.Clear(); // Clear the Deletion list
+            s_deletion.Clear(); // Clear the Deletion list
             
             // Update each animation instance
-            foreach (var instance in Instances)
+            foreach (var instance in s_instances)
             {
                 instance.Process();
             }
@@ -137,9 +137,9 @@ namespace LuckiusDev.Utils.DampedOscillator
             float springForce, float damp, float scaleFactor, float velocity)
         {
             var instance = new AnimationInstance<T>(animation, reset, originalValue, springForce, damp, velocity, scaleFactor);
-            Instances.Add(instance);
+            s_instances.Add(instance);
             
-            instance.AnimationFinished += (i) => Deletion.Add(i);
+            instance.onAnimationFinished += (i) => s_deletion.Add(i);
         }
 
         public static void Animate<T>(AnimationProcessDelegate<T> animation, AnimationEndDelegate<T> reset, T originalValue,

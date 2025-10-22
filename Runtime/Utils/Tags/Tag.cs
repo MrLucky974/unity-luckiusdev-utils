@@ -18,6 +18,6 @@ namespace LuckiusDev.Utils.Tags
             this.RegisterTag();
         }
 
-        public static bool TryGetTag(string tagName, out Tag tag) => (TagsManager.tags.TryGetValue(tagName, out tag));
+        public static bool TryGetTag(string tagName, out Tag tag) => (TagsManager.Tags.TryGetValue(tagName, out tag));
     }
 }

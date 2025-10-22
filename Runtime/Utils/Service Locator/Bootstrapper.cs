@@ -1,3 +1,4 @@
+using LuckiusDev.Utils.Extensions;
 using UnityEngine;
 
 namespace LuckiusDev.Utils.ServiceLocator

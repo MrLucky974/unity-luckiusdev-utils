@@ -18,7 +18,7 @@ namespace LuckiusDev.Utils
             return cellMix;
         }
 
-        public static string GetLayerName( Vector3 position, Terrain terrain ) {
+        public static string GetLayerName(Vector3 position, Terrain terrain) {
             float[] cellMix = GetTextureMix(position, terrain);
             
             float strongest = 0f;

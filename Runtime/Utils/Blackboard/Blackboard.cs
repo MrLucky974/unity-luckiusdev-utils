@@ -5,25 +5,25 @@ namespace LuckiusDev.Utils.Blackboard
 {
     public class Blackboard
     {
-        Dictionary<Enum, object> Values = new Dictionary<Enum, object>();
+        private readonly Dictionary<Enum, object> m_values = new();
 
-        public void Set<E, T>(E key, T value) where E : Enum
+        public void Set<TEnum, TValue>(TEnum key, TValue value) where TEnum : Enum
         {
-            Values[key] = value;
+            m_values[key] = value;
         }
 
-        public T Get<E, T>(E key) where E : Enum
+        public TValue Get<TEnum, TValue>(TEnum key) where TEnum : Enum
         {
-            if (!Values.ContainsKey(key))
-                throw new System.ArgumentException($"Could not find value for key: {key} in values.");
-            return (T)Values[key];
+            if (!m_values.TryGetValue(key, out var value))
+                throw new ArgumentException($"Could not find value for key: {key} in values.");
+            return (TValue)value;
         }
 
-        public bool TryGet<E, T>(E key, out T value, T defaultValue = default) where E : Enum
+        public bool TryGet<TEnum, TValue>(TEnum key, out TValue value, TValue defaultValue = default) where TEnum : Enum
         {
-            if (Values.ContainsKey(key))
+            if (m_values.TryGetValue(key, out var value1))
             {
-                value = (T)Values[key];
+                value = (TValue)value1;
                 return true;
             }
 

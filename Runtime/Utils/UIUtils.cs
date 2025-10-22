@@ -7,15 +7,15 @@ namespace LuckiusDev.Utils
 {
     public static class UIUtils
     {
-        private static PointerEventData _eventData;
-        private static List<RaycastResult> _results;
+        private static PointerEventData s_eventData;
+        private static List<RaycastResult> s_results;
 
         public static bool OverUI()
         {
-            _eventData = new PointerEventData(EventSystem.current) { position = Input.mousePosition };
-            _results = new List<RaycastResult>();
-            EventSystem.current.RaycastAll(_eventData, _results);
-            return _results.Count > 0;
+            s_eventData = new PointerEventData(EventSystem.current) { position = Input.mousePosition };
+            s_results = new List<RaycastResult>();
+            EventSystem.current.RaycastAll(s_eventData, s_results);
+            return s_results.Count > 0;
         }
 
         public static void Show(this CanvasGroup canvasGroup)

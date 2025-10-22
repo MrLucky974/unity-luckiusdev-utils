@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace LuckiusDev.Utils
+namespace LuckiusDev.Utils.Extensions
 {
     /// <summary>
     /// Extension methods for UnityEngine.Color.
@@ -15,7 +15,7 @@ namespace LuckiusDev.Utils
         /// <returns>A string representing the color in hexadecimal format.</returns>
         public static string ToHex(this Color color)
         {
-            // Convert color components (0–1 range) to 0–255 and then to two-digit hex
+            // Convert color components (0-1 range) to 0-255 and then to two-digit hex
             int r = Mathf.RoundToInt(color.r * 255);
             int g = Mathf.RoundToInt(color.g * 255);
             int b = Mathf.RoundToInt(color.b * 255);

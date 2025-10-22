@@ -9,15 +9,27 @@ namespace LuckiusDev.Utils.UIToolkit
     [RequireComponent(typeof(UIDocument))]
     public abstract class UIScreen : MonoBehaviour
     {
-        [SerializeField] protected UIDocument m_Document;
-        [SerializeField] protected StyleSheet m_StyleSheet;
+        [SerializeField] private UIDocument m_document;
+        [SerializeField] protected StyleSheet m_styleSheet;
+
+        protected UIDocument Document
+        {
+            get => m_document;
+            set => m_document = value;
+        }
+
+        protected StyleSheet StyleSheet
+        {
+            get => m_styleSheet;
+            set => m_styleSheet = value;
+        }
 
         private void Awake() {
             // Check for UIDocument component
-            if (m_Document == null)
-                m_Document = GetComponent<UIDocument>();
+            if (m_document == null)
+                m_document = GetComponent<UIDocument>();
 
-            Debug.Assert(m_Document != null, "UI Document not specified.", this);
+            Debug.Assert(m_document != null, "UI Document not specified.", this);
         }
         private void OnEnable() {
             StartCoroutine(Generate());
@@ -37,12 +49,12 @@ namespace LuckiusDev.Utils.UIToolkit
             yield return null;
             
             // Create root element
-            var root = m_Document.rootVisualElement;
+            var root = m_document.rootVisualElement;
             root.Clear();
             
             // Add base stylesheet
-            if (m_StyleSheet)
-                root.styleSheets.Add(m_StyleSheet);
+            if (m_styleSheet)
+                root.styleSheets.Add(m_styleSheet);
             
             // Call virtual method
             CreateScreenGUI(root);
