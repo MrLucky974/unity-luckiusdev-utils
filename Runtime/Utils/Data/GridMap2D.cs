@@ -6,6 +6,7 @@ namespace LuckiusDev.Utils.Data
     public class GridMap2D<TGridObject> : GridMapBase<TGridObject>
     {
         private readonly Vector2 m_originPosition;
+        public Vector2 WorldOrigin => m_originPosition;
 
         public GridMap2D(
             int width,
@@ -19,9 +20,26 @@ namespace LuckiusDev.Utils.Data
             m_originPosition = originPosition;
         }
 
-        public Vector2 GetWorldPosition(int x, int y)
+        public Vector2 WorldToAlignedWorld(Vector2 worldPosition, bool toCellCenter = true)
         {
-            return new Vector2(x, y) * cellSize + m_originPosition;
+            Vector2Int gridPos = WorldToGrid(worldPosition);
+            return GridToWorld(gridPos, toCellCenter);
+        }
+
+        public Vector2 GridToWorld(int x, int y, bool toCellCenter = true)
+        {
+            var position = new Vector2(x, y) * cellSize + m_originPosition;
+
+            if (toCellCenter)
+            {
+                position += Vector2.one * cellSize * 0.5f;
+            }
+            return position;
+        }
+
+        public Vector2 GridToWorld(Vector2Int gridPos, bool toCellCenter = true)
+        {
+            return GridToWorld(gridPos.x, gridPos.y, toCellCenter);
         }
 
         public Vector2Int WorldToGrid(Vector2 worldPosition)
