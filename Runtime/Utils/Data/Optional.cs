@@ -1,8 +1,7 @@
 using System;
 using UnityEngine;
-using UnityEngine.Serialization;
 
-namespace LuckiusDev.Utils
+namespace LuckiusDev.Utils.Data
 {
     [Serializable]
     public struct Optional<T>

@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using Object = UnityEngine.Object;
 
-namespace LuckiusDev.Utils
+namespace LuckiusDev.Utils.Data
 {
     [Serializable]
     public class SceneReference
@@ -13,7 +13,8 @@ namespace LuckiusDev.Utils
 
         public string SceneName => m_sceneName;
 
-        public static implicit operator string(SceneReference @object) {
+        public static implicit operator string(SceneReference @object)
+        {
             return @object.SceneName;
         }
 

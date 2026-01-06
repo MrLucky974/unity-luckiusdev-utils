@@ -1,6 +1,7 @@
 using UnityEngine;
 
 #if UNITY_EDITOR
+using LuckiusDev.Utils.Data;
 using UnityEditor;
 #endif
 

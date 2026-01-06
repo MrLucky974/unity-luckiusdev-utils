@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace LuckiusDev.Utils
+namespace LuckiusDev.Utils.Data
 {
     /// <summary>
     /// A generic 2D grid data structure for mapping grid coordinates to values of type TGridObject.

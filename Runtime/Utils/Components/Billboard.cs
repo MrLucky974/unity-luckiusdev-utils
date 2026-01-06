@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace LuckiusDev.Utils
+namespace LuckiusDev.Utils.Components
 {
     /// <summary>
     /// A component that enables the game object to look at the camera,
@@ -26,7 +26,8 @@ namespace LuckiusDev.Utils
 
         [SerializeField] private BillboardType m_billboardType;
 
-        [Header("Lock Rotation")] [SerializeField]
+        [Header("Lock Rotation")]
+        [SerializeField]
         private RotationLock m_rotationLock;
 
         private Vector3 m_originalRotation;

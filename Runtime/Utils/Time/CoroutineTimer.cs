@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 
-namespace LuckiusDev.Utils
+namespace LuckiusDev.Utils.TimeManagement
 {
     /// <summary>
     /// A utility class for managing a coroutine-based timer in Unity.
@@ -52,7 +52,7 @@ namespace LuckiusDev.Utils
             if (!m_isRunning || m_timerCoroutine == null) return;
 
             runner.StopCoroutine(m_timerCoroutine);
-            
+
             TimeLeft = 0;
             m_timerCoroutine = null;
             m_isRunning = false;

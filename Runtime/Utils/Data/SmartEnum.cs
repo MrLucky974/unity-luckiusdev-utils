@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace LuckiusDev.Utils
+namespace LuckiusDev.Utils.Data
 {
     public abstract class SmartEnum<T> where T : SmartEnum<T>
     {
@@ -36,7 +36,7 @@ namespace LuckiusDev.Utils
 
         public override bool Equals(object obj) => obj is T other && Name == other.Name;
         public override int GetHashCode() => Name.GetHashCode();
-        
+
         public static bool operator ==(SmartEnum<T> left, SmartEnum<T> right) => Equals(left, right);
         public static bool operator !=(SmartEnum<T> left, SmartEnum<T> right) => !Equals(left, right);
     }
