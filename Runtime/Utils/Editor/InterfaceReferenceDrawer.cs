@@ -25,18 +25,14 @@ namespace LuckiusDev.Utils.SerializedInterface
 
             if (assignedObject != null)
             {
-                if (args.InterfaceType.IsAssignableFrom(assignedObject.GetType()))
+                if (assignedObject is GameObject gameObject)
                 {
-                    if (assignedObject is GameObject gameObject)
-                    {
-                        var component = gameObject.GetComponent(args.InterfaceType);
-
-                        ValidateAndAssignObject(underlyingProperty, component, gameObject.name, args.InterfaceType.Name);
-                    }
-                    else
-                    {
-                        ValidateAndAssignObject(underlyingProperty, assignedObject, assignedObject.GetType().Name, args.InterfaceType.Name);
-                    }
+                    var component = gameObject.GetComponent(args.InterfaceType);
+                    ValidateAndAssignObject(underlyingProperty, component, gameObject.name, args.InterfaceType.Name);
+                }
+                else if (args.InterfaceType.IsAssignableFrom(assignedObject.GetType()))
+                {
+                    ValidateAndAssignObject(underlyingProperty, assignedObject, assignedObject.GetType().Name, args.InterfaceType.Name);
                 }
                 else
                 {
