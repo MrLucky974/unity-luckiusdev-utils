@@ -10,28 +10,28 @@ namespace LuckiusDev.Utils.ServiceLocator
 {
     public class ServiceLocator : MonoBehaviour
     {
-        static ServiceLocator global;
-        static Dictionary<Scene, ServiceLocator> sceneContainers;
-        static List<GameObject> tmpSceneGameObjects;
+        private static ServiceLocator s_global;
+        private static Dictionary<Scene, ServiceLocator> s_sceneContainers;
+        private static List<GameObject> s_tmpSceneGameObjects;
 
-        readonly ServiceManager services = new ServiceManager();
+        private readonly ServiceManager m_services = new();
 
         const string k_globalServiceLocatorName = "ServiceLocator [Global]";
         const string k_sceneServiceLocatorName = "ServiceLocator [Scene]";
 
         internal void ConfigureAsGlobal(bool dontDestroyOnLoad)
         {
-            if (global == this)
+            if (s_global == this)
             {
                 Debug.LogWarning("ServiceLocator.ConfigureAsGlobal: Already configured as global", this);
             }
-            else if (global != null)
+            else if (s_global != null)
             {
                 Debug.LogError("ServiceLocator.ConfigureAsGlobal: Another ServiceLocator is already configured as global", this);
             }
             else
             {
-                global = this;
+                s_global = this;
                 if (dontDestroyOnLoad) DontDestroyOnLoad(gameObject);
             }
         }
@@ -40,13 +40,13 @@ namespace LuckiusDev.Utils.ServiceLocator
         {
             Scene scene = gameObject.scene;
 
-            if (sceneContainers.ContainsKey(scene))
+            if (s_sceneContainers.ContainsKey(scene))
             {
                 Debug.LogError("ServiceLocator.ConfigureForScene: Another ServiceLocator is already configured for this scene", this);
                 return;
             }
 
-            sceneContainers.Add(scene, this);
+            s_sceneContainers.Add(scene, this);
         }
 
         /// <summary>
@@ -56,18 +56,18 @@ namespace LuckiusDev.Utils.ServiceLocator
         {
             get
             {
-                if (global != null) return global;
+                if (s_global != null) return s_global;
 
                 if (FindFirstObjectByType<ServiceLocatorGlobal>() is { } found)
                 {
                     found.BootstrapOnDemand();
-                    return global;
+                    return s_global;
                 }
 
                 var container = new GameObject(k_globalServiceLocatorName, typeof(ServiceLocator));
                 container.AddComponent<ServiceLocatorGlobal>().BootstrapOnDemand();
 
-                return global;
+                return s_global;
             }
         }
 
@@ -78,44 +78,17 @@ namespace LuckiusDev.Utils.ServiceLocator
         {
             Scene scene = mb.gameObject.scene;
 
-            if (sceneContainers.TryGetValue(scene, out ServiceLocator container) && container != mb)
+            if (s_sceneContainers.TryGetValue(scene, out ServiceLocator container) && container != mb)
             {
                 return container;
             }
 
-            tmpSceneGameObjects.Clear();
-            scene.GetRootGameObjects(tmpSceneGameObjects);
+            s_tmpSceneGameObjects.Clear();
+            scene.GetRootGameObjects(s_tmpSceneGameObjects);
 
-            foreach (GameObject go in tmpSceneGameObjects.Where(go => go.GetComponent<ServiceLocatorScene>() != null))
+            foreach (GameObject go in s_tmpSceneGameObjects.Where(go => go.GetComponent<ServiceLocatorScene>() != null))
             {
                 if (go.TryGetComponent(out ServiceLocatorScene bootstrapper) && bootstrapper.Container != mb)
-                {
-                    bootstrapper.BootstrapOnDemand();
-                    return bootstrapper.Container;
-                }
-            }
-
-            return Global;
-        }
-
-        /// <summary>
-        /// Gets the <see cref="ServiceLocator"/> configured for the scene of a GameObject. Falls back to the global instance.
-        /// </summary>
-        public static ServiceLocator ForSceneOf(GameObject go)
-        {
-            Scene scene = go.scene;
-
-            if (sceneContainers.TryGetValue(scene, out ServiceLocator container) && container != go)
-            {
-                return container;
-            }
-
-            tmpSceneGameObjects.Clear();
-            scene.GetRootGameObjects(tmpSceneGameObjects);
-
-            foreach (GameObject rootGo in tmpSceneGameObjects.Where(rootGo => rootGo.GetComponent<ServiceLocatorScene>() != null))
-            {
-                if (rootGo.TryGetComponent(out ServiceLocatorScene bootstrapper) && bootstrapper.Container != go)
                 {
                     bootstrapper.BootstrapOnDemand();
                     return bootstrapper.Container;
@@ -135,15 +108,6 @@ namespace LuckiusDev.Utils.ServiceLocator
         }
 
         /// <summary>
-        /// Gets the closest ServiceLocator instance to the provided
-        /// GameObject in hierarchy, the ServiceLocator for its scene, or the global ServiceLocator.
-        /// </summary>
-        public static ServiceLocator For(GameObject go)
-        {
-            return go.GetComponentInParent<ServiceLocator>().OrNull() ?? ForSceneOf(go) ?? Global;
-        }
-
-        /// <summary>
         /// Registers a service to the ServiceLocator using the service's type.
         /// </summary>
         /// <param name="service">The service to register.</param>  
@@ -151,7 +115,7 @@ namespace LuckiusDev.Utils.ServiceLocator
         /// <returns>The ServiceLocator instance after registering the service.</returns>
         public ServiceLocator Register<T>(T service)
         {
-            services.Register(service);
+            m_services.Register(service);
             return this;
         }
 
@@ -163,7 +127,7 @@ namespace LuckiusDev.Utils.ServiceLocator
         /// <returns>The ServiceLocator instance after registering the service.</returns>
         public ServiceLocator Register(Type type, object service)
         {
-            services.Register(type, service);
+            m_services.Register(type, service);
             return this;
         }
 
@@ -177,31 +141,11 @@ namespace LuckiusDev.Utils.ServiceLocator
         {
             if (TryGetService(out service)) return this;
 
-            if (TryGetNextInHierarchy(out ServiceLocator container))
-            {
-                container.Get(out service);
-                return this;
-            }
-
-            throw new ArgumentException($"ServiceLocator.Get: Service of type {typeof(T).FullName} not registered");
-        }
-
-        /// <summary>
-        /// Allows retrieval of a service of a specific type. An error is thrown if the required service does not exist.
-        /// </summary>
-        /// <typeparam name="T">Class type of the service to be retrieved.</typeparam>
-        /// <returns>Instance of the service of type T.</returns>
-        public T Get<T>() where T : class
-        {
-            Type type = typeof(T);
-            T service = null;
-
-            if (TryGetService(type, out service)) return service;
-
-            if (TryGetNextInHierarchy(out ServiceLocator container))
-                return container.Get<T>();
-
-            throw new ArgumentException($"Could not resolve type '{typeof(T).FullName}'.");
+            if (!TryGetNextInHierarchy(out ServiceLocator container))
+                throw new ArgumentException($"ServiceLocator.Get: Service of type {typeof(T).FullName} not registered");
+            
+            container.Get(out service);
+            return this;
         }
 
         /// <summary>
@@ -212,28 +156,22 @@ namespace LuckiusDev.Utils.ServiceLocator
         /// <returns>True if the service retrieval was successful, false otherwise.</returns>
         public bool TryGet<T>(out T service) where T : class
         {
-            Type type = typeof(T);
             service = null;
 
-            if (TryGetService(type, out service))
+            if (TryGetService(out service))
                 return true;
 
             return TryGetNextInHierarchy(out ServiceLocator container) && container.TryGet(out service);
         }
 
-        bool TryGetService<T>(out T service) where T : class
+        private bool TryGetService<T>(out T service) where T : class
         {
-            return services.TryGet(out service);
+            return m_services.TryGet(out service);
         }
 
-        bool TryGetService<T>(Type type, out T service) where T : class
+        private bool TryGetNextInHierarchy(out ServiceLocator container)
         {
-            return services.TryGet(out service);
-        }
-
-        bool TryGetNextInHierarchy(out ServiceLocator container)
-        {
-            if (this == global)
+            if (this == s_global)
             {
                 container = null;
                 return false;
@@ -243,36 +181,36 @@ namespace LuckiusDev.Utils.ServiceLocator
             return container != null;
         }
 
-        void OnDestroy()
+        private void OnDestroy()
         {
-            if (this == global)
+            if (this == s_global)
             {
-                global = null;
+                s_global = null;
             }
-            else if (sceneContainers.ContainsValue(this))
+            else if (s_sceneContainers.ContainsValue(this))
             {
-                sceneContainers.Remove(gameObject.scene);
+                s_sceneContainers.Remove(gameObject.scene);
             }
         }
 
         // https://docs.unity3d.com/ScriptReference/RuntimeInitializeOnLoadMethodAttribute.html
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
-        static void ResetStatics()
+        private static void ResetStatics()
         {
-            global = null;
-            sceneContainers = new Dictionary<Scene, ServiceLocator>();
-            tmpSceneGameObjects = new List<GameObject>();
+            s_global = null;
+            s_sceneContainers = new Dictionary<Scene, ServiceLocator>();
+            s_tmpSceneGameObjects = new List<GameObject>();
         }
 
 #if UNITY_EDITOR
-        [MenuItem("GameObject/ServiceLocator/Add Global")]
-        static void AddGlobal()
+        [MenuItem("GameObject/Service Locator/Add Global")]
+        private static void AddGlobal()
         {
             var go = new GameObject(k_globalServiceLocatorName, typeof(ServiceLocatorGlobal));
         }
 
-        [MenuItem("GameObject/ServiceLocator/Add Scene")]
-        static void AddScene()
+        [MenuItem("GameObject/Service Locator/Add Scene")]
+        private static void AddScene()
         {
             var go = new GameObject(k_sceneServiceLocatorName, typeof(ServiceLocatorScene));
         }
