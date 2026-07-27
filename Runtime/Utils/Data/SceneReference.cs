@@ -18,6 +18,14 @@ namespace LuckiusDev.Utils.Data
             return @object.SceneName;
         }
 
+        public static implicit operator SceneReference(string sceneName)
+        {
+            return new SceneReference
+            {
+                m_sceneName = sceneName
+            };
+        }
+
         public void Load()
         {
             SceneManager.LoadScene(m_sceneName);
