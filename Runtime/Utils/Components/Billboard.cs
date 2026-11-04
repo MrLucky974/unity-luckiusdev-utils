@@ -31,7 +31,18 @@ namespace LuckiusDev.Utils.Components
         private RotationLock m_rotationLock;
 
         private Vector3 m_originalRotation;
+        
         private Camera m_camera;
+        protected Camera Camera
+        {
+            get
+            {
+                if (m_camera == null)
+                    m_camera = Camera.main;
+
+                return m_camera;
+            }
+        }
 
         private void Awake()
         {
@@ -46,10 +57,10 @@ namespace LuckiusDev.Utils.Components
             switch (m_billboardType)
             {
                 case BillboardType.LOOK_AT_CAMERA:
-                    transform.LookAt(m_camera.transform.position, Vector3.up);
+                    transform.LookAt(Camera.transform.position, Vector3.up);
                     break;
                 case BillboardType.CAMERA_FORWARD:
-                    transform.forward = m_camera.transform.forward;
+                    transform.forward = Camera.transform.forward;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
