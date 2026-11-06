@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace LuckiusDev.Utils.Extensions
+namespace LuckiusDev.Utils
 {
     /// <summary>
     /// A collection of helpful extension methods for Unity's Component class.

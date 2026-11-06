@@ -2,22 +2,22 @@ using System;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace LuckiusDev.Utils.SerializedInterface
+namespace LuckiusDev.Utils
 {
     [Serializable]
     public class InterfaceReference<TInterface, TObject> where TObject : Object where TInterface : class
     {
-        [SerializeField, HideInInspector] TObject underlyingValue;
+        [SerializeField, HideInInspector] private TObject m_underlyingValue;
 
         public TInterface Value
         {
-            get => underlyingValue switch
+            get => m_underlyingValue switch
             {
                 null => null,
                 TInterface @interface => @interface,
-                _ => throw new InvalidOperationException($"{underlyingValue} needs to implement interface {nameof(TInterface)}.")
+                _ => throw new InvalidOperationException($"{m_underlyingValue} needs to implement interface {nameof(TInterface)}.")
             };
-            set => underlyingValue = value switch
+            set => m_underlyingValue = value switch
             {
                 null => null,
                 TObject newValue => newValue,
@@ -27,15 +27,15 @@ namespace LuckiusDev.Utils.SerializedInterface
 
         public TObject UnderlyingValue
         {
-            get => underlyingValue;
-            set => underlyingValue = value;
+            get => m_underlyingValue;
+            set => m_underlyingValue = value;
         }
 
         public InterfaceReference() { }
 
-        public InterfaceReference(TObject target) => underlyingValue = target;
+        public InterfaceReference(TObject target) => m_underlyingValue = target;
 
-        public InterfaceReference(TInterface @interface) => underlyingValue = @interface as TObject;
+        public InterfaceReference(TInterface @interface) => m_underlyingValue = @interface as TObject;
 
         public static implicit operator TInterface(InterfaceReference<TInterface, TObject> obj) => obj.Value;
     }

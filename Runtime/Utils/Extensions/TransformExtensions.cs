@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace LuckiusDev.Utils.Extensions
+namespace LuckiusDev.Utils
 {
     /// <summary>
     /// Extension methods for the Transform class providing additional functionality for managing child objects.

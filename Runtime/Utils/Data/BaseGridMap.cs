@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace LuckiusDev.Utils.Data
+namespace LuckiusDev.Utils
 {
     public abstract class GridMapBase<TGridObject>
     {

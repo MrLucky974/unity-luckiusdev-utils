@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace LuckiusDev.Utils.ServiceLocator
+namespace LuckiusDev.Utils
 {
     public class ServiceManager
     {
@@ -30,7 +30,7 @@ namespace LuckiusDev.Utils.ServiceLocator
                 return obj as T;
             }
 
-            throw new ArgumentException($"ServiceManager.Get: Service of type {type.FullName} not registered");
+            throw new ArgumentException($"ServiceManager.Get: Service of type {type.FullName} not registered.");
         }
 
         public ServiceManager Register<T>(T service)
@@ -39,7 +39,20 @@ namespace LuckiusDev.Utils.ServiceLocator
 
             if (!m_services.TryAdd(type, service))
             {
-                Debug.LogError($"ServiceManager.Register: Service of type {type.FullName} already registered");
+                Debug.LogError($"ServiceManager.Register: Service of type {type.FullName} already registered.");
+            }
+
+            return this;
+        }
+
+        public ServiceManager Deregister<T>(bool throwOnFailure = false)
+        {
+            Type type = typeof(T);
+
+            if (!m_services.Remove(type))
+            {
+                if (throwOnFailure)
+                    Debug.LogError($"ServiceManager.Deregister: Service of type {type.FullName} does not exist.");
             }
 
             return this;
@@ -49,12 +62,23 @@ namespace LuckiusDev.Utils.ServiceLocator
         {
             if (!type.IsInstanceOfType(service))
             {
-                throw new ArgumentException("Type of service does not match type of service interface", nameof(service));
+                throw new ArgumentException("Type of service does not match type of service interface.", nameof(service));
             }
 
             if (!m_services.TryAdd(type, service))
             {
-                Debug.LogError($"ServiceManager.Register: Service of type {type.FullName} already registered");
+                Debug.LogError($"ServiceManager.Register: Service of type {type.FullName} already registered.");
+            }
+
+            return this;
+        }
+
+        public ServiceManager Deregister(Type type, bool throwOnFailure = false)
+        {
+            if (!m_services.Remove(type))
+            {
+                if (throwOnFailure)
+                    Debug.LogError($"ServiceManager.Deregister: Service of type {type.FullName} does not exist.");
             }
 
             return this;

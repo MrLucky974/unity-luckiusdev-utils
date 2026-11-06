@@ -11,7 +11,7 @@ using UnityEngine;
 using UnityEditor;
 #endif
 
-namespace LuckiusDev.Utils.Tags
+namespace LuckiusDev.Utils
 {
     public static class TagsManager
     {
@@ -261,6 +261,6 @@ namespace LuckiusDev.Utils.Tags
 
 #endif
 
-#endregion
+        #endregion
     }
 }

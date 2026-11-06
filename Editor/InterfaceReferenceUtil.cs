@@ -1,11 +1,11 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace LuckiusDev.Utils.SerializedInterface
+namespace LuckiusDev.Utils
 {
     public class InterfaceReferenceUtil
     {
-        static GUIStyle labelStyle;
+        private static GUIStyle s_labelStyle;
 
         public static void OnGUI(Rect position, SerializedProperty property, GUIContent label, InterfaceArgs args)
         {
@@ -25,20 +25,20 @@ namespace LuckiusDev.Utils.SerializedInterface
                 const int verticalIndent = 1;
 
                 var content = EditorGUIUtility.TrTextContent(displayString);
-                var size = labelStyle.CalcSize(content);
+                var size = s_labelStyle.CalcSize(content);
                 var labelPos = position;
 
                 labelPos.width = size.x + additionalLeftWidth;
                 labelPos.x += position.width - labelPos.width - 18;
                 labelPos.height -= verticalIndent * 2;
                 labelPos.y += verticalIndent;
-                labelStyle.Draw(labelPos, EditorGUIUtility.TrTextContent(displayString), controlID, DragAndDrop.activeControlID == controlID, false);
+                s_labelStyle.Draw(labelPos, EditorGUIUtility.TrTextContent(displayString), controlID, DragAndDrop.activeControlID == controlID, false);
             }
         }
 
         static void InitializeStyleIfNeeded()
         {
-            if (labelStyle != null) return;
+            if (s_labelStyle != null) return;
 
             var style = new GUIStyle(EditorStyles.label)
             {
@@ -48,7 +48,7 @@ namespace LuckiusDev.Utils.SerializedInterface
                 alignment = TextAnchor.MiddleRight,
                 padding = new RectOffset(0, 2, 0, 0)
             };
-            labelStyle = style;
+            s_labelStyle = style;
         }
     }
 }

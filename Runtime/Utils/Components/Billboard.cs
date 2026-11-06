@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace LuckiusDev.Utils.Components
+namespace LuckiusDev.Utils
 {
     /// <summary>
     /// A component that enables the game object to look at the camera,
@@ -31,7 +31,7 @@ namespace LuckiusDev.Utils.Components
         private RotationLock m_rotationLock;
 
         private Vector3 m_originalRotation;
-        
+
         private Camera m_camera;
         protected Camera Camera
         {

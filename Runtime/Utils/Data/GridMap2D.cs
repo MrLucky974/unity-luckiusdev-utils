@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace LuckiusDev.Utils.Data
+namespace LuckiusDev.Utils
 {
     public class GridMap2D<TGridObject> : GridMapBase<TGridObject>
     {

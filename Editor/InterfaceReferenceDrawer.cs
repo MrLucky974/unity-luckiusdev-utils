@@ -6,17 +6,17 @@ using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace LuckiusDev.Utils.SerializedInterface
+namespace LuckiusDev.Utils
 {
     [CustomPropertyDrawer(typeof(InterfaceReference<>))]
     [CustomPropertyDrawer(typeof(InterfaceReference<,>))]
     public class InterfaceReferenceDrawer : PropertyDrawer
     {
-        const string UnderlyingValueFieldName = "underlyingValue";
+        private const string k_underlyingValueFieldName = "m_underlyingValue";
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
-            var underlyingProperty = property.FindPropertyRelative(UnderlyingValueFieldName);
+            var underlyingProperty = property.FindPropertyRelative(k_underlyingValueFieldName);
             var args = GetArguments(fieldInfo);
 
             EditorGUI.BeginProperty(position, label, property);

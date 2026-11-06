@@ -1,8 +1,8 @@
 using UnityEngine;
 
-namespace LuckiusDev.Utils.Tags
+namespace LuckiusDev.Utils
 {
-    [CreateAssetMenu(fileName = "Tag", menuName = "GameObject/Tags")]
+    [CreateAssetMenu(fileName = "Tag", menuName = "LuckiusDev/Utils/GameObject/Tags")]
     public class Tag : ScriptableObject
     {
         private void OnEnable()

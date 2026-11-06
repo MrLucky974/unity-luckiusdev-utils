@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace LuckiusDev.Utils.ProcGen
+namespace LuckiusDev.Utils
 {
     public static class NoiseMap
     {

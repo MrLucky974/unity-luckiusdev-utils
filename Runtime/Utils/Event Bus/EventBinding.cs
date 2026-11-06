@@ -1,7 +1,7 @@
-namespace LuckiusDev.Utils.EventBus
-{
-    using System;
+using System;
 
+namespace LuckiusDev.Utils
+{
     /// <summary>
     /// Interface for event bindings with and without arguments.
     /// </summary>

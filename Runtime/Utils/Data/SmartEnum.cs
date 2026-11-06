@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace LuckiusDev.Utils.Data
+namespace LuckiusDev.Utils
 {
     public abstract class SmartEnum<T> where T : SmartEnum<T>
     {

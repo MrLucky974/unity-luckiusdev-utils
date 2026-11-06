@@ -1,4 +1,4 @@
-namespace LuckiusDev.Utils.EventBus
+namespace LuckiusDev.Utils
 {
     public interface IEvent
     {

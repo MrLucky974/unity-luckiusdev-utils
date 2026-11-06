@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace LuckiusDev.Utils.TimeManagement
+namespace LuckiusDev.Utils
 {
     /// <summary>
     /// A utility class providing access to custom time values

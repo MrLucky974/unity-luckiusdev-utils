@@ -116,11 +116,35 @@ namespace LuckiusDev.Utils
         /// <summary>
         /// Wraps a value between two bounds, including both ends.
         /// </summary>
-        public static int WrapValue(int a, int b, int x)
+        public static int WrapValue(int value, int min, int max)
         {
-            int range = b - a + 1;
-            int result = (x - a) % range;
-            return result < 0 ? result + range + a : result + a;
+            int range = max - min + 1;
+            int result = (value - min) % range;
+            return result < 0 ? result + range + min : result + min;
+        }
+
+        /// <summary>
+        /// Remaps a value from one range to another.
+        /// </summary>
+        public static float Remap(float value, float fromMin, float fromMax, float toMin, float toMax)
+        {
+            return toMin + (value - fromMin) * (toMax - toMin) / (fromMax - fromMin);
+        }
+
+        /// <summary>
+        /// Rounds a float value to the nearest step.
+        /// </summary>
+        public static float RoundToStep(float value, float step)
+        {
+            return Mathf.Round(value / step) * step;
+        }
+
+        /// <summary>
+        /// Linearly interpolates between two values and clamps the result.
+        /// </summary>
+        public static float LerpClamped(float a, float b, float t)
+        {
+            return Mathf.Lerp(a, b, Mathf.Clamp01(t));
         }
 
         #endregion
@@ -154,38 +178,11 @@ namespace LuckiusDev.Utils
         public static bool IsApproxEqual(double a, double b) =>
             IsApproxEqual(a, b, double.Epsilon);
 
-        #endregion
-
-        /// <summary>
-        /// Remaps a value from one range to another.
-        /// </summary>
-        public static float Remap(float value, float fromMin, float fromMax, float toMin, float toMax)
-        {
-            return toMin + (value - fromMin) * (toMax - toMin) / (fromMax - fromMin);
-        }
-
-        /// <summary>
-        /// Linearly interpolates between two values and clamps the result.
-        /// </summary>
-        public static float LerpClamped(float a, float b, float t)
-        {
-            return Mathf.Lerp(a, b, Mathf.Clamp01(t));
-        }
-
         /// <summary>
         /// Returns true if the value is approximately zero.
         /// </summary>
-        public static bool IsZero(float value, float epsilon = 0.0001f)
-        {
-            return Mathf.Abs(value) < epsilon;
-        }
+        public static bool IsZero(float value) => IsApproxEqual(value, 0F);
 
-        /// <summary>
-        /// Rounds a float value to the nearest step.
-        /// </summary>
-        public static float RoundToStep(float value, float step)
-        {
-            return Mathf.Round(value / step) * step;
-        }
+        #endregion
     }
 }

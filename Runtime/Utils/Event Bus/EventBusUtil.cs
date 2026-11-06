@@ -1,11 +1,11 @@
-namespace LuckiusDev.Utils.EventBus
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Reflection;
-    using UnityEditor;
-    using UnityEngine;
+using System;
+using System.Collections.Generic;
+using System.Reflection;
+using UnityEditor;
+using UnityEngine;
 
+namespace LuckiusDev.Utils
+{
     /// <summary>
     /// Contains methods and properties related to event buses and event types in the Unity application.
     /// </summary>

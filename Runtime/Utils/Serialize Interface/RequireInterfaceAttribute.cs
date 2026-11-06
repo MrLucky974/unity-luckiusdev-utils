@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace LuckiusDev.Utils.SerializedInterface
+namespace LuckiusDev.Utils
 {
     [AttributeUsage(AttributeTargets.Field)]
     public class RequireInterfaceAttribute : PropertyAttribute

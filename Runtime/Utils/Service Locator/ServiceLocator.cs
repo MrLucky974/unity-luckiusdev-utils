@@ -1,37 +1,36 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using LuckiusDev.Utils.Extensions;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace LuckiusDev.Utils.ServiceLocator
+namespace LuckiusDev.Utils
 {
     public class ServiceLocator : MonoBehaviour
     {
-        private static ServiceLocator s_global;
+        private static ServiceLocator s_globalInstance;
         private static Dictionary<Scene, ServiceLocator> s_sceneContainers;
         private static List<GameObject> s_tmpSceneGameObjects;
 
         private readonly ServiceManager m_services = new();
 
-        const string k_globalServiceLocatorName = "ServiceLocator [Global]";
-        const string k_sceneServiceLocatorName = "ServiceLocator [Scene]";
+        private const string k_globalServiceLocatorName = "ServiceLocator [Global]";
+        private const string k_sceneServiceLocatorName = "ServiceLocator [Scene]";
 
         internal void ConfigureAsGlobal(bool dontDestroyOnLoad)
         {
-            if (s_global == this)
+            if (s_globalInstance == this)
             {
                 Debug.LogWarning("ServiceLocator.ConfigureAsGlobal: Already configured as global", this);
             }
-            else if (s_global != null)
+            else if (s_globalInstance != null)
             {
                 Debug.LogError("ServiceLocator.ConfigureAsGlobal: Another ServiceLocator is already configured as global", this);
             }
             else
             {
-                s_global = this;
+                s_globalInstance = this;
                 if (dontDestroyOnLoad) DontDestroyOnLoad(gameObject);
             }
         }
@@ -56,18 +55,18 @@ namespace LuckiusDev.Utils.ServiceLocator
         {
             get
             {
-                if (s_global != null) return s_global;
+                if (s_globalInstance != null) return s_globalInstance;
 
-                if (FindFirstObjectByType<ServiceLocatorGlobal>() is { } found)
+                if (FindAnyObjectByType<ServiceLocatorGlobal>() is { } found)
                 {
                     found.BootstrapOnDemand();
-                    return s_global;
+                    return s_globalInstance;
                 }
 
                 var container = new GameObject(k_globalServiceLocatorName, typeof(ServiceLocator));
                 container.AddComponent<ServiceLocatorGlobal>().BootstrapOnDemand();
 
-                return s_global;
+                return s_globalInstance;
             }
         }
 
@@ -143,7 +142,7 @@ namespace LuckiusDev.Utils.ServiceLocator
 
             if (!TryGetNextInHierarchy(out ServiceLocator container))
                 throw new ArgumentException($"ServiceLocator.Get: Service of type {typeof(T).FullName} not registered");
-            
+
             container.Get(out service);
             return this;
         }
@@ -171,7 +170,7 @@ namespace LuckiusDev.Utils.ServiceLocator
 
         private bool TryGetNextInHierarchy(out ServiceLocator container)
         {
-            if (this == s_global)
+            if (this == s_globalInstance)
             {
                 container = null;
                 return false;
@@ -183,9 +182,9 @@ namespace LuckiusDev.Utils.ServiceLocator
 
         private void OnDestroy()
         {
-            if (this == s_global)
+            if (this == s_globalInstance)
             {
-                s_global = null;
+                s_globalInstance = null;
             }
             else if (s_sceneContainers.ContainsValue(this))
             {
@@ -197,7 +196,7 @@ namespace LuckiusDev.Utils.ServiceLocator
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         private static void ResetStatics()
         {
-            s_global = null;
+            s_globalInstance = null;
             s_sceneContainers = new Dictionary<Scene, ServiceLocator>();
             s_tmpSceneGameObjects = new List<GameObject>();
         }

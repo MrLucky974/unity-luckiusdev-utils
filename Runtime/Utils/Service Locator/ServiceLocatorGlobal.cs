@@ -1,9 +1,9 @@
 using UnityEngine;
 
-namespace LuckiusDev.Utils.ServiceLocator
+namespace LuckiusDev.Utils
 {
-    [AddComponentMenu("ServiceLocator/ServiceLocator Global")]
-    public class ServiceLocatorGlobal : Bootstrapper
+    [AddComponentMenu("LuckiusDev/Utils/Service Locator/Global")]
+    public sealed class ServiceLocatorGlobal : ServiceLocatorBootstrapper
     {
         [SerializeField] bool dontDestroyOnLoad = true;
 

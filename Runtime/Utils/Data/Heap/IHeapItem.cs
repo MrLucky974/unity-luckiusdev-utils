@@ -1,6 +1,6 @@
 using System;
 
-namespace LuckiusDev.Utils.Heap
+namespace LuckiusDev.Utils
 {
     public interface IHeapItem<T> : IComparable<T>
     {

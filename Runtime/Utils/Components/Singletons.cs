@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace LuckiusDev.Utils.Singleton
+namespace LuckiusDev.Utils
 {
     /// <summary>
     /// A static instance is similar to a singleton, but instead of destroying any new
@@ -48,7 +48,7 @@ namespace LuckiusDev.Utils.Singleton
             DontDestroyOnLoad(gameObject);
         }
     }
-    
+
     /// <summary>
     /// A Singleton that auto-creates itself if no instance exists yet.
     /// </summary>
@@ -68,7 +68,7 @@ namespace LuckiusDev.Utils.Singleton
             protected set => StaticInstance<T>.Instance = value;
         }
     }
-    
+
     /// <summary>
     /// A Persistent Singleton that auto-creates itself if no instance exists yet.
     /// </summary>

@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace LuckiusDev.Utils.Tags
+namespace LuckiusDev.Utils
 {
     [AddComponentMenu("GameObject/Tags")]
     public class Tags : MonoBehaviour

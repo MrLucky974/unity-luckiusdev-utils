@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using LuckiusDev.Utils.Extensions;
 using UnityEngine;
 
 namespace LuckiusDev.Utils
@@ -137,10 +136,10 @@ namespace LuckiusDev.Utils
 
         public static string Bold(string text) => $"<b>{text}</b>";
         public static string ToBold(this string text) => Bold(text);
-        
+
         public static string Italic(string text) => $"<i>{text}</i>";
         public static string ToItalic(this string text) => Italic(text);
-        
+
         public static string Size(string text, int size) => $"<size={size}>{text}</size>";
         public static string ToSize(this string text, int size) => Size(text, size);
 

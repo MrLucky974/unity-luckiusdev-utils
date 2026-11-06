@@ -4,7 +4,7 @@
 
 using System;
 
-namespace LuckiusDev.Utils.TimeManagement
+namespace LuckiusDev.Utils
 {
     public abstract class Timer
     {

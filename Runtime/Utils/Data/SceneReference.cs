@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using Object = UnityEngine.Object;
 
-namespace LuckiusDev.Utils.Data
+namespace LuckiusDev.Utils
 {
     [Serializable]
     public class SceneReference

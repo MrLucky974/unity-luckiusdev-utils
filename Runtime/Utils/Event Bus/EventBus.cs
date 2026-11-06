@@ -1,8 +1,8 @@
-namespace LuckiusDev.Utils.EventBus
-{
-    using System.Collections.Generic;
-    using UnityEngine;
+using System.Collections.Generic;
+using UnityEngine;
 
+namespace LuckiusDev.Utils
+{
     /// <summary>
     /// Static class for managing event bindings and raising events.
     /// </summary>

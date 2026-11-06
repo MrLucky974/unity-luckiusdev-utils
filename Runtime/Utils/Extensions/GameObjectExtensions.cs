@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace LuckiusDev.Utils.Extensions
+namespace LuckiusDev.Utils
 {
     public static class GameObjectExtensions
     {
@@ -17,5 +17,7 @@ namespace LuckiusDev.Utils.Extensions
         /// <param name="obj">The object being checked.</param>
         /// <returns>The object itself if it exists and not destroyed, null otherwise.</returns>
         public static T OrNull<T>(this T obj) where T : Object => obj ? obj : null;
+
+        public static bool IsNull<T>(this T obj) where T : Object => obj.OrNull() == null;
     }
 }

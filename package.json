@@ -1,26 +1,24 @@
 {
-    "name": "io.github.mrlucky974.unity-luckiusdev-utils",
-    "displayName": "LuckiusDev Utils",
-    "version": "1.5.10",
-    "unity": "2022.3",
-    "description": "A collection of utility scripts and tools for Unity development.",
-    "author": {
-        "name": "luckiusdev",
-        "url": "https://github.com/mrlucky974"
-    },
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/MrLucky974/unity-luckiusdev-utils.git"
-    },
-    "keywords": [
-        "unity",
-        "utilities",
-        "tools",
-        "luckiusdev",
-        "singleton",
-        "events",
-        "services"
-    ],
-    "dependencies": {}
+  "name": "io.github.mrlucky974.unity-luckiusdev-utils",
+  "displayName": "LuckiusDev Utils",
+  "version": "1.5.11",
+  "unity": "2022.3",
+  "description": "A collection of utility scripts and tools for Unity development.",
+  "author": {
+    "name": "luckiusdev",
+    "url": "https://github.com/mrlucky974"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MrLucky974/unity-luckiusdev-utils.git"
+  },
+  "keywords": [
+    "unity",
+    "utilities",
+    "tools",
+    "luckiusdev",
+    "singleton",
+    "events",
+    "services"
+  ]
 }
-  

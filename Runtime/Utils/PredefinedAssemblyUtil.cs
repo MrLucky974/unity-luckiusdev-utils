@@ -1,9 +1,9 @@
-namespace LuckiusDev.Utils.EventBus
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Reflection;
+using System;
+using System.Collections.Generic;
+using System.Reflection;
 
+namespace LuckiusDev.Utils
+{
     /// <summary>
     /// A utility class, PredefinedAssemblyUtil, provides methods to interact with predefined assemblies.
     /// It allows to get all types in the current AppDomain that implement from a specific Interface type.
@@ -65,11 +65,11 @@ namespace LuckiusDev.Utils.EventBus
         /// <returns>List of Types implementing the provided interface type.</returns>
         public static List<Type> GetTypes(Type interfaceType)
         {
-            Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
+            IReadOnlyList<Assembly> assemblies = UnityEngine.Assemblies.CurrentAssemblies.GetLoadedAssemblies();
 
             Dictionary<AssemblyType, Type[]> assemblyTypes = new Dictionary<AssemblyType, Type[]>();
             List<Type> types = new List<Type>();
-            for (int i = 0; i < assemblies.Length; i++)
+            for (int i = 0; i < assemblies.Count; i++)
             {
                 AssemblyType? assemblyType = GetAssemblyType(assemblies[i].GetName().Name);
                 if (assemblyType != null)
